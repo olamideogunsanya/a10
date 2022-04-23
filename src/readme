@@ -1,3 +1,23 @@
-When running all the different tests, I realized that it took longer for the 
+What kind of files lead to a lot of compression?
 
-When I tried to compress a huffman file there was not
+After completing Huffman compression on different types of files, Calgary type files had the highest percentage of compression, approxmiately 43.239% and 43.765% compression average for Standard Count format and Tree format, respectively. 
+Books and HTML type files also had a high percentage of compression at approxmiately 40.460% average. This makes books and HTML files more compressible than Tif files in Waterloo, but slightly less compressible than files in Calgary.
+Identically, the Tif files in Waterloo was the least compressible type out of all three, with only 18.137% compression average. Furthermore, it should also be noted that regardless of header, both Standard Count format and Tree format 
+yield similar percentage of average compression for all three types of files, that is, there is minimal difference in compressibility of the two types of format. 
+
+What kind of files had little to no compression?
+The image files had little to no compression. When I ran experiments on them there percentage hoevered around .325%. I believe the reason for this is that there 
+The reason for images files not being compressed efficiently is because the color in each pixels of the image has RGB and each color has 256 different intensity of its color. 
+This means that a pixel can vary in a lot of color, more than a ASCII chart size. Therefore, the frequencies of the read chunk of bits will be more average. 
+So I am assuming that similar images file will also have inefficient compression. 
+This is the data that I compress a random picture.
+
+What happens when you try and compress a huffman code file?
+It is possible to compress a Huffman compress file that has already been compressed. In our experiment, we compressed the Calgary files a total of three times. 
+Seen in the results, while the second compression lead to approximately 1.938% more compression, the third compression actually increased the size of the compressed file, with a compression average of -0.817%. 
+This pattern is also seen in the Tree format, of which the second compression decreased the size while the third compression actually increased the size. 
+This is likely due to the fact when it comes to the second compression, we are no longer compressing the original data, but rather the encoded data that resulted from the first Huffman compression, and so, 
+hile the first compression of the encoded data may lead to a tiny bit more compression, compressing the code of the encoded data, that is the third compression, will result in a bigger size due to the difference in the encoding. 
+In other words, by adding more layers of encoding, we may end up making the file larger
+
+
