@@ -29,11 +29,11 @@ public class HuffCompressor implements IHuffConstants {
         // reads through all the bits in file
         while (bis != -1) {
             count += BITS_PER_WORD;
+            // add frequency of that bit
             freqs[bis]++;
             bis = in.readBits(BITS_PER_WORD);
         }
-        // once get to end, set frequency of PSEUDO_EOF to since
-        // PSEUDO_EOF is at the end of the file
+        // set frequency of PSEDU_EOF to 1
         freqs[PSEUDO_EOF]++;
     }
 
@@ -47,7 +47,7 @@ public class HuffCompressor implements IHuffConstants {
      * @param tree variable for huffman tree
      */
     public void compress(BitInputStream in, BitOutputStream out, int count,
-                         HuffmanTree tree) throws IOException {
+                         HuffTree tree) throws IOException {
         int bis = in.readBits(BITS_PER_WORD);
         while (bis != -1) {
             // store bit sequence string into compressed file
@@ -85,8 +85,8 @@ public class HuffCompressor implements IHuffConstants {
      */
     public void writeSCF(BitOutputStream out, int count,
                          int[] freqs) {
-        // goes through each frequency in valueStorage, and writes BITS_PER_INT
-        // amount of bits for that frequency
+        // goes through each frequecny and writes amount of bits
+        // for that frequency
         for (int k = 0; k < ALPH_SIZE; k++) {
             out.writeBits(BITS_PER_INT, freqs[k]);
             count += BITS_PER_INT;
@@ -107,25 +107,22 @@ public class HuffCompressor implements IHuffConstants {
         count++;
         if (node.isLeaf()) {
             if (out != null) {
-                // write 1 to out because at a leaf node
+                // at a leaf node, write 1
                 out.writeBits(1, 1);
-                // write BITS_PER_WORD + 1 (+1 to account for PSEUDO_EOF which
-                // will be that many bits) bits for node's value
                 out.writeBits(BITS_PER_WORD + 1,
                         node.getValue());
             }
             // update count to account for node's value being added
             count += BITS_PER_WORD + 1;
         } else {
-            // if out isn't null, then write 0 to out
             if (out != null) {
                 out.writeBits(1, 0);
             }
-            // if left child isn't null, recursive step passing in left child
+            // recursive step passing in left child
             if (node.getLeft() != null) {
                 writeSTF(out, node.getLeft(), count);
             }
-            // if right child isn't null, recursive step passing in right child
+            // recursive step passing in right child
             if (node.getRight() != null) {
                 writeSTF(out, node.getRight(), count);
             }

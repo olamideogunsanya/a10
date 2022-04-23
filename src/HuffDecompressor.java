@@ -39,9 +39,10 @@ public class HuffDecompressor implements IHuffConstants {
     }
 
     /**
-     * reads
+     * pre: none
+     * reads STF header in order to determine root
      * @param in the input stream
-     * @return TreeNode root of the tree
+     * @return root of tree
      */
     public TreeNode readSTF(BitInputStream in) throws IOException {
         int bit = in.readBits(1);
@@ -50,12 +51,11 @@ public class HuffDecompressor implements IHuffConstants {
             // and storing the left and right childdren
             return new TreeNode(readSTF(in), -1, readSTF(in));
         } else if (bit == 1) {
-            // if bit=1, then at a leaf node, so scan in next BITS_PER_WORD + 1
-            // bits which is value, and frequency as 1
+            // if bit = 1, then at a leaf node, so scan in next BITS_PER_WORD + 1
             return new TreeNode(in.readBits(IHuffConstants.BITS_PER_WORD + 1),
                     1);
         }
-        // if bit is not 0 or 1 then there is incorrect formatting
+        // if bit is not 0 or 1 then there is an error in the formatting
         else {
             throw new IOException("erorr in reading bits");
         }
@@ -63,14 +63,15 @@ public class HuffDecompressor implements IHuffConstants {
 
     /**
      * pre: none
-     * Writes the data from the uncompressed file into
-     * @param in
-     * @param out
-     * @param root
-     * @return
-     * @throws IOException
+     * Writes the data from the uncompressed file into the
+     * output stream and returns an int to show how many
+     * bitsr were written
+     * @param in input stream
+     * @param out output stream
+     * @param root used for deciphering purposes
+     * @return how many bits were written
      */
-    public int writeData(BitInputStream in, BitOutputStream out, TreeNode root)
+    public int decipher(BitInputStream in, BitOutputStream out, TreeNode root)
             throws IOException {
         TreeNode node = root;
         int numBits = 0;
@@ -95,18 +96,18 @@ public class HuffDecompressor implements IHuffConstants {
                 node = node.getRight();
             }
             if (node.isLeaf()) {
-                // if at PSEUDO_EOF, end decompression and close streams
+                // once PSEUDO_EOF reached end decompression
                 if (node.getValue() == IHuffConstants.PSEUDO_EOF) {
                     end = true;
                     out.close();
                     in.close();
                 }
                 else {
-                    // write those that value into uncompressed file
+                    // write into uncrompressed file
                     out.writeBits(IHuffConstants.BITS_PER_WORD,
                             node.getValue());
                     numBits += IHuffConstants.BITS_PER_WORD;
-                    // reset to beginning of tree
+                    // reset 
                     node = root;
                 }
             }

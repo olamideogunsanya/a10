@@ -22,9 +22,9 @@ public class SimpleHuffProcessor implements IHuffProcessor {
 
     private IHuffViewer myViewer;
     private HuffCompressor comp;
-    private int HF;
+    private int hf;
+    private HuffTree tree;
     private int[] freq;
-    private HuffmanTree tree;
     
     /**
      * Preprocess data so that compression is possible --- count
@@ -46,7 +46,7 @@ public class SimpleHuffProcessor implements IHuffProcessor {
      */
     public int preprocessCompress(InputStream in, int headerFormat)
             throws IOException {
-        HF = headerFormat;
+        hf = headerFormat;
         // initialize frequency to ALPH_SIZE + 1 in order to
         freq = new int[ALPH_SIZE + 1];
         comp = new HuffCompressor();
@@ -57,7 +57,7 @@ public class SimpleHuffProcessor implements IHuffProcessor {
         // counts number of bits in original file and stores in count
         comp.countFreqs(new BitInputStream(new BufferedInputStream(in)),
                 oldBits, freq);
-        tree = new HuffmanTree(freq);
+        tree = new HuffTree(freq);
         if (headerFormat == STORE_COUNTS) {
             // if SCF, then adds to newCount the SCF header size
             newBits += BITS_PER_INT * ALPH_SIZE;
@@ -69,12 +69,12 @@ public class SimpleHuffProcessor implements IHuffProcessor {
             in.close();
             throw new IOException("this type of compresion is not implmented");
         }
-        // stores the huffman code of each value into a map (called BitMappings
-        // in HuffmanTree class), value added to newCount[0] is # of bits for
+        // stores the huffman code of each value into a map,
+        // value added to count is the number of bits for
         // actual compressed data
         tree.gitBits("", newBits);
-        // return the bits saved
         myViewer.update("total uncompressed bits " + (oldBits - newBits));
+        // return saved bits
         return oldBits - newBits;
     
     }
@@ -100,41 +100,38 @@ public class SimpleHuffProcessor implements IHuffProcessor {
         if (force) {
             BitInputStream bis = new BitInputStream(new BufferedInputStream(in));
             BitOutputStream bos = new BitOutputStream(new BufferedOutputStream(out));
-            // every compression implemented writes the MAGIC_NUMBER and
-            // headerFormat
+            // write magic number and header format
             bos.writeBits(BITS_PER_INT, MAGIC_NUMBER);
-            bos.writeBits(BITS_PER_INT, HF);
-            // this array will count number of bits in compressed file
-            // initialized to following value because of wrote MAGIC_NUMBER and
+            bos.writeBits(BITS_PER_INT, hf);
+            // this count will keep track of bits in compressed file
             int compressedBits = BITS_PER_INT + BITS_PER_INT;
             // if doing SCF, then write SCF header
-            if (HF == STORE_COUNTS) {
+            if (hf == STORE_COUNTS) {
                 comp.writeSCF(bos, compressedBits, freq);
             }
-            else if (HF == STORE_TREE) {
+            // if doing STF, write STF header
+            else if (hf == STORE_TREE) {
                 // write the size of the tree
                 bos.writeBits(BITS_PER_INT, tree.getSize(comp));
-                // add to count appropriately (adding BITS_PER_INT) because
-                // added BITS_PER_INT bits for tree size
+                // add to count appropriately
                 compressedBits += BITS_PER_INT;
-                // write the STF header
                 tree.writeHeaderSTF(bos, compressedBits, comp);
             }
-            // else, this compression is not implemented, so close streams and
-            // throw error
+            // compression not implemented so throw error
             else {
                 bis.close();
                 bos.close();
                 throw new IOException("error");
             }
+            // compress apprpriately and return the number of bits compressed
             comp.compress(bis, bos, compressedBits, tree);
             myViewer.update("Total compressed bits" + compressedBits);
             myViewer.showMessage("Compressed bits" + compressedBits);
             return compressedBits;
         }
         // force is false so show an error
-        myViewer.showError(
-                "Compressed file has more bits than uncompressed file");
+        myViewer.showError("Compressed file has more bits than uncompressed file");
+        // should not get here, but if so then return 0
         return 0;
     }
 
@@ -167,21 +164,23 @@ public class SimpleHuffProcessor implements IHuffProcessor {
         if (type == STORE_COUNTS) {
             // read SCF header, rebuild the tree, and store the root
             decomp.readSCF(bis, freq);
-            tree = new HuffmanTree(freq);
+            tree = new HuffTree(freq);
         }
+        // if STF
         else if (type == STORE_TREE) {
             // read size of tree
             bis.readBits(BITS_PER_INT);
             // read STF header and store root
-            tree = new HuffmanTree(decomp, bis);
+            tree = new HuffTree(decomp, bis);
         }
         // when it is not STF OR SCF
         else {
             bos.close();
             bis.close();
-            throw new IOException("this type of compression has not gone through");
+            throw new IOException("erorr");
         }
         // write uncompressed file
+        // return the number of bits uncompressed
         myViewer.showMessage("Decompression complete");
         return tree.decode(bis, bos, decomp);
     }

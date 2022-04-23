@@ -15,7 +15,7 @@
 import java.io.IOException;
 import java.util.HashMap;
 
-public class HuffmanTree {
+public class HuffTree {
 
     private TreeNode root;
     private HashMap<Integer, String> mappings;
@@ -26,55 +26,54 @@ public class HuffmanTree {
      * Huffman tree for SCF
      * @param frequencies storage for the frequencies
      */
-    HuffmanTree(int[] frequencies) {
+    HuffTree(int[] frequencies) {
         mappings = new HashMap<>();
-        //TODO Change this
-       root = makeTree();
+        root = makeTree();
         q = buildQueue(frequencies);
     }
 
     // builds huffman tree for STF
-    HuffmanTree(HuffDecompressor decompressor, BitInputStream in) throws IOException {
+    HuffTree(HuffDecompressor decompressor, BitInputStream in) throws IOException {
         mappings = new HashMap<>();
         root = decompressor.readSTF(in);
     }
 
     /**
      * builds and fills the priority queue
-     * @param frequencies
+     * @param freqs frequency storage
      * @return priority queue sorted with treeNodes from lowest to highest
      * priority
      */
-    private PriorityQueue<TreeNode> buildQueue(int[] frequencies){
+    private PriorityQueue<TreeNode> buildQueue(int[] freqs){
         // create queue to be filled and returned
         PriorityQueue<TreeNode> pQueue = new PriorityQueue<>();
-        for (int i = 0; i < frequencies.length; i++) {
+        for (int i = 0; i < freqs.length; i++) {
             // if value is not 0 then we need to add it
-            if (frequencies[i] != 0) {
+            if (freqs[i] != 0) {
                 // enqueue a new TreeNode with index stored as value, and
                 // freqStorage[i] for frequency
-                pQueue.enqueue(new TreeNode(i, frequencies[i]));
+                pQueue.enqueue(new TreeNode(i, freqs[i]));
             }
         }
         return pQueue;
     }
 
     /**
-     * builds the tree needed for the
-     * @return root of the tree
+     * pre: none
+     * builds the tree needed for SCF
+     * @return TreeNode root
      */
     private TreeNode makeTree() {
         while (q.size() > 1) {
             // dequeue 2 nodes, and set first dequeued node to left child,
             // second to right child and set value to whatever (doesn't matter)
-            TreeNode nodeOne = q.dequeue();
-            TreeNode nodeTwo = q.dequeue();
-            TreeNode root = new TreeNode(nodeOne, -1, nodeTwo);
-            // enqueue that new node into priority queue
-            q.enqueue(root);
+            TreeNode n = q.dequeue();
+            TreeNode n1 = q.dequeue();
+            TreeNode temp = new TreeNode(n, -1, n1);
+            // enqueue that new node into priorty queue
+            q.enqueue(temp);
         }
-        root = q.dequeue();
-        return root;
+        return q.dequeue();
     }
 
     // return the bit mappings
@@ -94,7 +93,8 @@ public class HuffmanTree {
 
     /**
      * pre: none
-     * post:
+     * stores bit sequences for nodes into map and adjusts
+     * count accordingly for bits of compressed data
      * @param bitString
      * @param node the node that is being
      * @param count keeps track of the number of bitStrings
@@ -105,26 +105,27 @@ public class HuffmanTree {
         if (node.isLeaf()) {
             // put value as key and bitString for value
             mappings.put(node.getValue(), bitString);
-            // add length of bitString (number of bits to be added) * frequency
-            // of that node= total number of bits to be added for that value
-            count = bitString.length() * node.getFrequency();
+            // add the number of bits to be added and multiply it by frequency 
+            // pf the node to get the total number of bits added for a value
+            count += bitString.length() * node.getFrequency();
         } else {
-            // if node.getLeft() isnt null, add 0 to bitString and go to left
-            // child
-            if (node.getLeft() != null)
+            // add 0 to bitString and go to left child
+            if (node.getLeft() != null) {
                 gitBits(bitString + LEFT, node.getLeft(), count);
-            // if node.getRight() isnt null, add 1 to bitString and go to right
-            // child
-            if (node.getRight() != null)
+            }
+            // add 1 to bitString and go to right child
+            if (node.getRight() != null) {
                 gitBits(bitString + RIGHT, node.getRight(), count);
+            }
         }
     }
 
     /**
      * pre: none
-     * @param out
-     * @param count
-     * @param compressor
+     * writes the header and updates count
+     * @param out output stream
+     * @param count keeps track of number of bits
+     * @param compressor object for Huffman Compressor
      */
     public void writeHeaderSTF(BitOutputStream out, int count,
                                HuffCompressor compressor) {
@@ -134,10 +135,23 @@ public class HuffmanTree {
 
     /**
      * pre: none
-     * Return the size of the tree, if not calculated then
-     * run calculations
+     * @param in input stream
+     * @param out output stream
+     * @param decompressor object for huffDecompressor
+     * @return a decompressed version of the file
+     */
+    public int decode(BitInputStream in, BitOutputStream out,
+                      HuffDecompressor decompressor) throws IOException {
+        return decompressor.decipher(in, out, root);
+    }
+
+
+
+    /**
+     * pre: none
+     * Return the size of the tree
      * @param compressor compressor object
-     * @return the size of
+     * @return the size of tree, calculate it if not set
      */
     public int getSize(HuffCompressor compressor) {
         // if headerSizeSTF is 0, then calculate size (this is not in
@@ -151,17 +165,5 @@ public class HuffmanTree {
         }
         return size;
     }
-
-    /**
-     * pre: none
-     * @param in
-     * @param out
-     * @param decompressor
-     * @return a decompressed version of the file
-     */
-    public int decode(BitInputStream in, BitOutputStream out,
-                      HuffDecompressor decompressor) throws IOException {
-
-        return decompressor.writeData(in, out, root);
-    }
 }
+    
