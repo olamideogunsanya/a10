@@ -74,7 +74,9 @@ public class SimpleHuffProcessor implements IHuffProcessor {
         // actual compressed data
         tree.gitBits("", newBits);
         // return the bits saved
+        myViewer.update("total uncompressed bits " + (oldBits - newBits));
         return oldBits - newBits;
+    
     }
 
     /**
@@ -126,6 +128,8 @@ public class SimpleHuffProcessor implements IHuffProcessor {
                 throw new IOException("error");
             }
             comp.compress(bis, bos, compressedBits, tree);
+            myViewer.update("Total compressed bits" + compressedBits);
+            myViewer.showMessage("Compressed bits" + compressedBits);
             return compressedBits;
         }
         // force is false so show an error
@@ -153,6 +157,7 @@ public class SimpleHuffProcessor implements IHuffProcessor {
         if (bis.readBits(BITS_PER_INT) != MAGIC_NUMBER) {
             bis.close();
             bos.close();
+            myViewer.update("Magic number does not match. Halting decompression");
             throw new IOException("File has not been compressed");
         }
         freq = new int[ALPH_SIZE + 1];
@@ -177,6 +182,7 @@ public class SimpleHuffProcessor implements IHuffProcessor {
             throw new IOException("this type of compression has not gone through");
         }
         // write uncompressed file
+        myViewer.showMessage("Decompression complete");
         return tree.decode(bis, bos, decomp);
     }
 

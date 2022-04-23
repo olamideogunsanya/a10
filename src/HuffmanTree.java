@@ -1,16 +1,16 @@
 /*  Student information for assignment:
  *
- *  On <MY|OUR> honor Olamide Ogunsanya) this programming assignment is <MY|OUR> own work
+ *  On <MY> honor, Olamide Ogunsanya) this programming assignment is <MY> own work
  *  and <I|WE> have not provided this code to any other student.
  *
- *  Number of slip days used: 0
+ *  Number of slip days used: 2
  *
  *  Student 1 (Student whose turnin account is being used)
  *  UTEID: oto272
  *  email address: olamideogunsanya@utexas.edu
  *  Grader name: Trisha Agrawal
- *
  */
+
 
 import java.io.IOException;
 import java.util.HashMap;
