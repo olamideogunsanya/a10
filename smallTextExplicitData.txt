@@ -1,0 +1,9 @@
+Data for 
+
+Eerie eyes seen near lake.
+
+The pseudo-eof character is not shown.
+
+Spaces are included for clarity.
+
+11111 10 1101 0000 10 011 10 0011 10 1110 011 1110 10 10 1100 011 1100 10 0101 1101 011 0010 0101 0001 10 11110
