@@ -40,7 +40,6 @@ public class DoNothingHuffViewer implements IHuffViewer {
 
     @Override
     public void setModel(IHuffProcessor model) {
-        // TODO Auto-generated method stub
         
     }
 
