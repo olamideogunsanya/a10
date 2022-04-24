@@ -114,7 +114,8 @@ public class HuffCompressor implements IHuffConstants {
             }
             // update count to account for node's value being added
             count += BITS_PER_WORD + 1;
-        } else {
+        } 
+		else {
             if (out != null) {
                 out.writeBits(1, 0);
             }

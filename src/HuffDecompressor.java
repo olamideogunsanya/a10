@@ -18,10 +18,9 @@ public class HuffDecompressor implements IHuffConstants {
     /**
      * rebuilds freq storage by scanning headStarterSf
      * @param in the input stream
-     * @param freqStorage storage being rebuilt
-     * @throws IOException
+     * @param freqs storage being rebuilt
      */
-    public void readSCF(BitInputStream in, int[] freqStorage)
+    public void readSCF(BitInputStream in, int[] freqs)
             throws IOException {
         // reading the header
         for (int i = 0; i < IHuffConstants.ALPH_SIZE; i++) {
@@ -30,12 +29,12 @@ public class HuffDecompressor implements IHuffConstants {
             if (bits == -1) {
                 throw new IOException("error reading header");
             }
-            // store bits (frequency) into freqStorage at index k
-            freqStorage[i] = bits;
+            // store bits frequency into storage
+            freqs[i] = bits;
         }
         // incrementing PSEUDO_EOF to build tree correctly and
         // decompression purposes
-        freqStorage[PSEUDO_EOF]++;
+        freqs[PSEUDO_EOF]++;
     }
 
     /**
@@ -50,7 +49,8 @@ public class HuffDecompressor implements IHuffConstants {
             // continue building tree by reading in header
             // and storing the left and right childdren
             return new TreeNode(readSTF(in), -1, readSTF(in));
-        } else if (bit == 1) {
+        } 
+		else if (bit == 1) {
             // if bit = 1, then at a leaf node, so scan in next BITS_PER_WORD + 1
             return new TreeNode(in.readBits(IHuffConstants.BITS_PER_WORD + 1),
                     1);
@@ -73,7 +73,7 @@ public class HuffDecompressor implements IHuffConstants {
      */
     public int decipher(BitInputStream in, BitOutputStream out, TreeNode root)
             throws IOException {
-        TreeNode node = root;
+        TreeNode n = root;
         int numBits = 0;
         boolean end = false;
         // while haven't reached PSEUDO_EOF
@@ -84,20 +84,19 @@ public class HuffDecompressor implements IHuffConstants {
             if (bit == -1) {
                 in.close();
                 out.close();
-                throw new IOException("Error reading compressed file. \n"
-                        + "unexpected end of input. No PSEUDO_EOF value.");
+                throw new IOException("Error reading compressed file.");
             }
             // go to left child
             else if (bit == 0) {
-                node = node.getLeft();
+                n = n.getLeft();
             }
             // go to right child
             else if (bit == 1) {
-                node = node.getRight();
+                n = n.getRight();
             }
-            if (node.isLeaf()) {
+            if (n.isLeaf()) {
                 // once PSEUDO_EOF reached end decompression
-                if (node.getValue() == IHuffConstants.PSEUDO_EOF) {
+                if (n.getValue() == IHuffConstants.PSEUDO_EOF) {
                     end = true;
                     out.close();
                     in.close();
@@ -105,10 +104,10 @@ public class HuffDecompressor implements IHuffConstants {
                 else {
                     // write into uncrompressed file
                     out.writeBits(IHuffConstants.BITS_PER_WORD,
-                            node.getValue());
+                            n.getValue());
                     numBits += IHuffConstants.BITS_PER_WORD;
                     // reset 
-                    node = root;
+                    n = root;
                 }
             }
         }

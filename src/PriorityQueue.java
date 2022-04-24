@@ -16,43 +16,32 @@ import java.util.Iterator;
 
 public class PriorityQueue<E extends Comparable< ? super E>>{
     private LinkedList<E> con;
-
-    public static void main(String[] args){
-    }
     // creates empty priority queue
     PriorityQueue(){
         con = new LinkedList<>();
     }
 
     /**
-     * adds element at the appropriate spot
-     * @param element the element being added
-     * @return T if element was added, F otherwise
+     * pre: none
+     * adds elements at correct spot based on fairness
+     * @param element element being added
      */
-    // Enqueue object to correct spot based on priority of object
-    // Higher priority is placed towards the front while low priority is
-    // placed towards the end
-    // In the case of a tie, put object being added behind objects already
-    // present with the same priority 
-    // Pre: value != null
-    // Post: Enqueue value into correct spot based on priority
-    public void enqueue(E elementToAdd) { 
-        Iterator<E> iterator = con.iterator();
-        boolean isAdded = false;
-        
-        int index = 0;
-        while(iterator.hasNext() && !isAdded) {
-            E currentElement = iterator.next();
+    public void enqueue(E element) { 
+        // will be used to see if elemenet is already in queue
+        boolean inQ = false;
+        Iterator<E> it = con.iterator();
+        int idx = 0;
+        while(it.hasNext() && !inQ) {
+            E curr = it.next();
             // If  currentElement > elementToAdd, this is correct spot to add elementToAdd 
-            if(currentElement.compareTo(elementToAdd) > 0) { 
-                con.add(index, elementToAdd);
-                isAdded = true;
+            if(curr.compareTo(element) > 0) { 
+                con.add(idx, element);
+                inQ = true;
             }
-            index++;
+            idx++;
         }
-        
-        if(!isAdded) {
-            con.addLast(elementToAdd);
+        if(!inQ) {
+            con.addLast(element);
         }
     }
 
