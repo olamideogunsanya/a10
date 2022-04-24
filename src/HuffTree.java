@@ -28,8 +28,9 @@ public class HuffTree {
      */
     HuffTree(int[] frequencies) {
         mappings = new HashMap<>();
+		q = buildQueue(frequencies);
         root = makeTree();
-        q = buildQueue(frequencies);
+        
     }
 
     // builds huffman tree for STF
@@ -87,8 +88,8 @@ public class HuffTree {
      * @param bitString
      * @param count
      */
-    public void gitBits(String bitString, int count) {
-        gitBits(bitString, root, count);
+    public void getBits(String bitString, int count) {
+        getBits(bitString, root, count);
     }
 
     /**
@@ -99,7 +100,7 @@ public class HuffTree {
      * @param node the node that is being
      * @param count keeps track of the number of bitStrings
      */
-    private void gitBits(String bitString, TreeNode node, int count) {
+    private void getBits(String bitString, TreeNode node, int count) {
         final String LEFT = "0";
         final String RIGHT = "1";
         if (node.isLeaf()) {
@@ -111,11 +112,11 @@ public class HuffTree {
         } else {
             // add 0 to bitString and go to left child
             if (node.getLeft() != null) {
-                gitBits(bitString + LEFT, node.getLeft(), count);
+                getBits(bitString + LEFT, node.getLeft(), count);
             }
             // add 1 to bitString and go to right child
             if (node.getRight() != null) {
-                gitBits(bitString + RIGHT, node.getRight(), count);
+                getBits(bitString + RIGHT, node.getRight(), count);
             }
         }
     }

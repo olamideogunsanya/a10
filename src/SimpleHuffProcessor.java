@@ -72,8 +72,7 @@ public class SimpleHuffProcessor implements IHuffProcessor {
         // stores the huffman code of each value into a map,
         // value added to count is the number of bits for
         // actual compressed data
-        tree.gitBits("", newBits);
-        myViewer.update("total uncompressed bits " + (oldBits - newBits));
+        tree.getBits("", newBits);
         // return saved bits
         return oldBits - newBits;
     
@@ -125,8 +124,6 @@ public class SimpleHuffProcessor implements IHuffProcessor {
             }
             // compress apprpriately and return the number of bits compressed
             comp.compress(bis, bos, compressedBits, tree);
-            myViewer.update("Total compressed bits" + compressedBits);
-            myViewer.showMessage("Compressed bits" + compressedBits);
             return compressedBits;
         }
         // force is false so show an error

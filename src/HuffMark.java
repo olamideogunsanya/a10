@@ -109,5 +109,4 @@ public class HuffMark {
          }
          return null;
     }
-    
 }

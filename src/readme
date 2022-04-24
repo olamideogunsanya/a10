@@ -1,23 +1,109 @@
 What kind of files lead to a lot of compression?
 
-After completing Huffman compression on different types of files, Calgary type files had the highest percentage of compression, approxmiately 43.239% and 43.765% compression average for Standard Count format and Tree format, respectively. 
-Books and HTML type files also had a high percentage of compression at approxmiately 40.460% average. This makes books and HTML files more compressible than Tif files in Waterloo, but slightly less compressible than files in Calgary.
-Identically, the Tif files in Waterloo was the least compressible type out of all three, with only 18.137% compression average. Furthermore, it should also be noted that regardless of header, both Standard Count format and Tree format 
-yield similar percentage of average compression for all three types of files, that is, there is minimal difference in compressibility of the two types of format. 
+After running th experiments, it seemed that the files in the calgary directory had the most compression 
+at 43.239% with a .387 completion time.
+
+The files in BooksAndHTML also had a high compression percentage at 40.460% average. This makes books and HTML files more less compressible than the calgary files, but more compressible than the waterloo tif files that 
+had a 18.137 completion percentage.
 
 What kind of files had little to no compression?
-The image files had little to no compression. When I ran experiments on them there percentage hoevered around .325%. I believe the reason for this is that there 
-The reason for images files not being compressed efficiently is because the color in each pixels of the image has RGB and each color has 256 different intensity of its color. 
-This means that a pixel can vary in a lot of color, more than a ASCII chart size. Therefore, the frequencies of the read chunk of bits will be more average. 
-So I am assuming that similar images file will also have inefficient compression. 
-This is the data that I compress a random picture.
+The tif (image) files had little to no compression. Their percentage was the lowest compared to the other files
+and this might have to do with the RGB values present in each pixel of the image that has 256 different intensity. This will result in inefficient compression because of difficulty with ASCII values.
 
 What happens when you try and compress a huffman code file?
-It is possible to compress a Huffman compress file that has already been compressed. In our experiment, we compressed the Calgary files a total of three times. 
-Seen in the results, while the second compression lead to approximately 1.938% more compression, the third compression actually increased the size of the compressed file, with a compression average of -0.817%. 
-This pattern is also seen in the Tree format, of which the second compression decreased the size while the third compression actually increased the size. 
-This is likely due to the fact when it comes to the second compression, we are no longer compressing the original data, but rather the encoded data that resulted from the first Huffman compression, and so, 
-hile the first compression of the encoded data may lead to a tiny bit more compression, compressing the code of the encoded data, that is the third compression, will result in a bigger size due to the difference in the encoding. 
-In other words, by adding more layers of encoding, we may end up making the file larger
+I found that it was possible to compress a Huffman code file that has already been cmopressed. Upon my experiment, I continously compressed calgary files and saw a trend. In the second trial, the compression percentage increased, while on the third attempt the percentage decreased. From this, I deduced that the
+percentage increased in the second compression by a tiny bit because it was compressing fresh encoded data. The third trial made the file size larger because there was a difference in the encoding which lead to less compression.
+Data:
 
+BOOKS AND HTML
+compressing to: /Users/olaogunsanya/Desktop/a10/BooksAndHTML/melville.txt.hf
+melville.txt from        82140 to        47364 in        0.049
+compressing to: /Users/olaogunsanya/Desktop/a10/BooksAndHTML/A7_Recursion.html.hf
+A7_Recursion.html from   41163 to        26189 in        0.006
+compressing to: /Users/olaogunsanya/Desktop/a10/BooksAndHTML/jnglb10.txt.hf
+jnglb10.txt from         292059 to       168618 in       0.038
+compressing to: /Users/olaogunsanya/Desktop/a10/BooksAndHTML/ThroughTheLookingGlass.txt.hf
+ThroughTheLookingGlass.txt from  188199 to       110293 in       0.022
+compressing to: /Users/olaogunsanya/Desktop/a10/BooksAndHTML/syllabus.htm.hf
+syllabus.htm from        33273 to        21342 in        0.005
+compressing to: /Users/olaogunsanya/Desktop/a10/BooksAndHTML/revDictionary.txt.hf
+revDictionary.txt from   1130523 to      611618 in       0.100
+compressing to: /Users/olaogunsanya/Desktop/a10/BooksAndHTML/CiaFactBook2000.txt.hf
+CiaFactBook2000.txt from         3497369 to      2260664 in      0.382
+compressing to: /Users/olaogunsanya/Desktop/a10/BooksAndHTML/kjv10.txt.hf
+kjv10.txt from   4345020 to      2489768 in      0.424
+compressing to: /Users/olaogunsanya/Desktop/a10/BooksAndHTML/rawMovieGross.txt.hf
+rawMovieGross.txt from   117272 to       53833 in        0.009
+compressing to: /Users/olaogunsanya/Desktop/a10/BooksAndHTML/quotes.htm.hf
+quotes.htm from  61563 to        38423 in        0.007
+--------
+total bytes read: 9788581
+total compressed bytes 5828112
+total percent compression 40.460
+compression time: 0.949
 
+Calgary
+compressing to: /Users/olaogunsanya/Desktop/a10/calgary/paper6.hf
+paper6 from      38105 to        25057 in        0.036
+compressing to: /Users/olaogunsanya/Desktop/a10/calgary/paper1.hf
+paper1 from      53161 to        34371 in        0.022
+compressing to: /Users/olaogunsanya/Desktop/a10/calgary/obj1.hf
+obj1 from        21504 to        17085 in        0.009
+compressing to: /Users/olaogunsanya/Desktop/a10/calgary/geo.hf
+geo from         102400 to       73592 in        0.033
+compressing to: /Users/olaogunsanya/Desktop/a10/calgary/progc.hf
+progc from       39611 to        26948 in        0.007
+compressing to: /Users/olaogunsanya/Desktop/a10/calgary/progl.hf
+progl from       71646 to        44017 in        0.010
+compressing to: /Users/olaogunsanya/Desktop/a10/calgary/book1.hf
+book1 from       768771 to       439409 in       0.084
+compressing to: /Users/olaogunsanya/Desktop/a10/calgary/progp.hf
+progp from       49379 to        31248 in        0.005
+compressing to: /Users/olaogunsanya/Desktop/a10/calgary/pic.hf
+pic from         513216 to       107586 in       0.021
+compressing to: /Users/olaogunsanya/Desktop/a10/calgary/news.hf
+news from        377109 to       247428 in       0.036
+compressing to: /Users/olaogunsanya/Desktop/a10/calgary/paper4.hf
+paper4 from      13286 to        8894 in         0.002
+compressing to: /Users/olaogunsanya/Desktop/a10/calgary/bib.hf
+bib from         111261 to       73795 in        0.012
+compressing to: /Users/olaogunsanya/Desktop/a10/calgary/paper3.hf
+paper3 from      46526 to        28309 in        0.004
+compressing to: /Users/olaogunsanya/Desktop/a10/calgary/paper2.hf
+paper2 from      82199 to        48649 in        0.008
+compressing to: /Users/olaogunsanya/Desktop/a10/calgary/paper5.hf
+paper5 from      11954 to        8465 in         0.002
+compressing to: /Users/olaogunsanya/Desktop/a10/calgary/obj2.hf
+obj2 from        246814 to       195131 in       0.032
+compressing to: /Users/olaogunsanya/Desktop/a10/calgary/trans.hf
+trans from       93695 to        66252 in        0.011
+compressing to: /Users/olaogunsanya/Desktop/a10/calgary/book2.hf
+book2 from       610856 to       369335 in       0.053
+--------
+total bytes read: 3251493
+total compressed bytes 1845571
+total percent compression 43.239
+compression time: 0.387
+
+Waterloo
+compressing to: /Users/olaogunsanya/Desktop/a10/waterloo/sail.tif.hf
+sail.tif from    1179784 to      1085501 in      0.230
+compressing to: /Users/olaogunsanya/Desktop/a10/waterloo/monarch.tif.hf
+monarch.tif from         1179784 to      1109973 in      0.164
+compressing to: /Users/olaogunsanya/Desktop/a10/waterloo/clegg.tif.hf
+clegg.tif from   2149096 to      2034595 in      0.298
+compressing to: /Users/olaogunsanya/Desktop/a10/waterloo/lena.tif.hf
+lena.tif from    786568 to       766146 in       0.112
+compressing to: /Users/olaogunsanya/Desktop/a10/waterloo/serrano.tif.hf
+serrano.tif from         1498414 to      1127645 in      0.163
+compressing to: /Users/olaogunsanya/Desktop/a10/waterloo/peppers.tif.hf
+peppers.tif from         786568 to       756968 in       0.107
+compressing to: /Users/olaogunsanya/Desktop/a10/waterloo/tulips.tif.hf
+tulips.tif from  1179784 to      1135861 in      0.161
+compressing to: /Users/olaogunsanya/Desktop/a10/waterloo/frymire.tif.hf
+frymire.tif from         3706306 to      2188593 in      0.324
+--------
+total bytes read: 12466304
+total compressed bytes 10205282
+total percent compression 18.137
+compression time: 1.559
